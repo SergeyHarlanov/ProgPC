@@ -1,30 +1,50 @@
 using UnityEngine;
 
-
-public class Circle : BuildableObject
+public class Circle : Buildable
 {
     [SerializeField] private float _placementOffset = 0.5f;
 
-    protected override void Start()
+    public override BuildableType Type => BuildableType.Circle;
+
+    protected override void UpdatePlacement()
     {
-        base.Start();
-        _type = BuildableType.Circle;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, _maxPlacementDistance, _placementLayers))
+        {
+            Vector3 newPosition = CalculatePosition(hit);
+            newPosition = BuildingGrid.Instance.FindFreePositionForObject(newPosition, Type);
+            
+            bool isFree = BuildingGrid.Instance.IsPositionFree(newPosition, Type);
+            bool isValid = isFree && IsPositionValid(hit);
+            Debug.Log(isFree+"Type"+Type);
+
+            UpdateVisuals(newPosition, isValid);
+
+            if (Input.GetMouseButtonUp(0) && isValid)
+            {
+                CompleteBuilding(BuildingGrid.Instance.SnapToGrid(newPosition));
+            }
+            else if (Input.GetMouseButtonDown(1))
+            {
+                CancelBuilding();
+            }
+        }
+        else
+        {
+            transform.position = ray.GetPoint(_maxPlacementDistance * 0.5f);
+            _meshRenderer.material.color = _followColor;
+        }
     }
 
     protected override Vector3 CalculatePosition(RaycastHit hit)
     {
-        Vector3 position = hit.point + hit.normal * transform.localScale.z / 2;
-
-        Vector3 positionGrid = BuildingSystem.Instance.SnapToGrid(position);
-        
-        return positionGrid;
+        Vector3 offset = hit.normal * (transform.localScale.y * _placementOffset);
+        Vector3 position = hit.point + offset;
+        return BuildingGrid.Instance.SnapToGrid(position);
     }
 
     protected override bool IsPositionValid(RaycastHit hit)
     {
-        bool isValidSurface = hit.transform.CompareTag("Wall");
-
-        return isValidSurface;
+        return hit.transform.CompareTag("Wall");
     }
-
 }

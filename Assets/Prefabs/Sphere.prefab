@@ -458,9 +458,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1d531ae177448759e7775e118ec24db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _colorValid: {r: 0, g: 1, b: 0, a: 1}
-  _colorInvalid: {r: 1, g: 0, b: 0, a: 1}
-  _colorFollow: {r: 1, g: 1, b: 1, a: 0.5176471}
+  _validColor: {r: 0, g: 1, b: 0, a: 1}
+  _invalidColor: {r: 1, g: 0, b: 0, a: 1}
+  _followColor: {r: 1, g: 1, b: 1, a: 0.5}
   _placementLayers:
     serializedVersion: 2
     m_Bits: 192
