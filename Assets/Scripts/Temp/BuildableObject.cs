@@ -42,12 +42,15 @@ public abstract class BuildableObject : MonoBehaviour
       
         if (Physics.Raycast(ray, out RaycastHit hit, _maxPlacementDistance, _placementLayers))
         {
-
             Vector3 newPosition = CalculatePosition(hit);
-
+            
+           
             newPosition = BuildingSystem.Instance.FindFreePositionForObject(newPosition, BuildableType.Cube) * transform.localScale.y;
 
-            UpdateAppearance(newPosition, IsPositionValid(hit));
+           if (BuildingSystem.Instance.IsFree(newPosition, _type))
+            {
+                UpdateAppearance(newPosition, IsPositionValid(hit));
+            }
         }
         else
         {
