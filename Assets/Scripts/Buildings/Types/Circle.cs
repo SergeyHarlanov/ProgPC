@@ -8,23 +8,22 @@ public class Circle : Buildable
 
     protected override void UpdatePlacement()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = AppServices.Input.MouseRay;
         if (Physics.Raycast(ray, out RaycastHit hit, _maxPlacementDistance, _placementLayers))
         {
             Vector3 newPosition = CalculatePosition(hit);
-            newPosition = BuildingGrid.Instance.FindFreePositionForObject(newPosition, Type);
+            newPosition = AppServices.Grid.FindFreePositionForObject(newPosition, Type);
             
-            bool isFree = BuildingGrid.Instance.IsPositionFree(newPosition, Type);
+            bool isFree = AppServices.Grid.IsPositionFree(newPosition, Type);
             bool isValid = isFree && IsPositionValid(hit);
-            Debug.Log(isFree+"Type"+Type);
 
             UpdateVisuals(newPosition, isValid);
 
-            if (Input.GetMouseButtonUp(0) && isValid)
+            if (AppServices.Input.LeftMouseButtonUp && isValid)
             {
-                CompleteBuilding(BuildingGrid.Instance.SnapToGrid(newPosition));
+                CompleteBuilding(AppServices.Grid.SnapToGrid(newPosition));
             }
-            else if (Input.GetMouseButtonDown(1))
+            else if (AppServices.Input.RightMouseButtonDown)
             {
                 CancelBuilding();
             }
@@ -40,7 +39,7 @@ public class Circle : Buildable
     {
         Vector3 offset = hit.normal * (transform.localScale.y * _placementOffset);
         Vector3 position = hit.point + offset;
-        return BuildingGrid.Instance.SnapToGrid(position);
+        return AppServices.Grid.SnapToGrid(position);
     }
 
     protected override bool IsPositionValid(RaycastHit hit)

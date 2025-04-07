@@ -46,7 +46,7 @@ public abstract class Buildable : MonoBehaviour
         _isBuilding = true;
         _originalPosition = transform.position;
         SetVisualState(_followColor, false);
-        BuildingGrid.Instance.UnregisterObject(this, _originalPosition);
+        AppServices.Grid.UnregisterObject(this, _originalPosition);
     }
 
     protected void CompleteBuilding(Vector3 finalPosition)
@@ -54,7 +54,7 @@ public abstract class Buildable : MonoBehaviour
         _isBuilding = false;
         transform.position = finalPosition;
         SetVisualState(_originalColor, true);
-        BuildingGrid.Instance.RegisterObject(this, finalPosition);
+        AppServices.Grid.RegisterObject(this, finalPosition);
     }
 
     protected void CancelBuilding()
@@ -66,7 +66,7 @@ public abstract class Buildable : MonoBehaviour
     
     private void UpdateRotation()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        float scroll = AppServices.Input.MouseScrollDelta;
         if (scroll != 0)
         {
             _rotationAngle += Mathf.Sign(scroll) * 45f;
@@ -87,7 +87,6 @@ public abstract class Buildable : MonoBehaviour
     }
     
     protected abstract void UpdatePlacement();
-
     protected abstract Vector3 CalculatePosition(RaycastHit hit);
     protected abstract bool IsPositionValid(RaycastHit hit);
 }

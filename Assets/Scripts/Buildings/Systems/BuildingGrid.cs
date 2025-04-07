@@ -4,21 +4,9 @@ using UnityEngine;
 
 public class BuildingGrid : MonoBehaviour
 {
-    public static BuildingGrid Instance { get; private set; }
-
     [SerializeField] private float _gridSize = 1f;
 
     private readonly Dictionary<Vector3Int, List<Buildable>> _occupiedCells = new();
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-    }
 
     public Vector3 SnapToGrid(Vector3 position)
     {
